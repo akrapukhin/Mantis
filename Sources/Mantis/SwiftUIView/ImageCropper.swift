@@ -61,6 +61,7 @@ public struct ImageCropperView: UIViewControllerRepresentable {
     @Binding var transformation: Transformation?
     @Binding var cropInfo: CropInfo?
     @Binding var action: CropAction?
+    @Binding var isResettable: Bool
     
     let onDismiss: () -> Void
     let onCropCompleted: (_ status: CropStatus) -> Void
@@ -72,11 +73,14 @@ public struct ImageCropperView: UIViewControllerRepresentable {
     ///   - image: A binding to the original image to be cropped.
     ///   - transformation: A binding to receive the transformation (rotation, scaling, etc.) applied to the image.
     ///   - cropInfo: A binding to receive information about the selected crop area.
+    ///   - action: A binding to trigger crop actions (reset, rotate, etc.).
+    ///   - isResettable: A binding to track whether the crop view can be reset.
     public init(config: Mantis.Config = Mantis.Config(),
                 image: Binding<UIImage?>,
                 transformation: Binding<Transformation?>,
                 cropInfo: Binding<CropInfo?>,
                 action: Binding<CropAction?> = .constant(nil),
+                isResettable: Binding<Bool> = .constant(false),
                 onDismiss: @escaping () -> Void = {},
                 onCropCompleted: @escaping (_ status: CropStatus) -> Void = { _  in}) {
         self.config = config
@@ -84,6 +88,7 @@ public struct ImageCropperView: UIViewControllerRepresentable {
         _transformation = transformation
         _cropInfo = cropInfo
         _action = action
+        _isResettable = isResettable
         self.onDismiss = onDismiss
         self.onCropCompleted = onCropCompleted
     }
@@ -126,6 +131,11 @@ public struct ImageCropperView: UIViewControllerRepresentable {
             lastProcessedAction = nil
             parent.onDismiss()
             parent.onCropCompleted(.failed)
+        }
+        
+        @MainActor
+        public func cropViewController(_ cropViewController: Mantis.CropViewController, didBecomeResettable resettable: Bool) {
+            parent.isResettable = resettable
         }
         
         @MainActor
