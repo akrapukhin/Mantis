@@ -133,33 +133,77 @@ extension CropMaskProtocol {
 extension UIBezierPath {
     convenience init(heartIn rect: CGRect) {
         self.init()
-
-        // Calculate Radius of Arcs using Pythagoras
-        let sideOne = rect.width * 0.4
-        let sideTwo = rect.height * 0.3
-        let arcRadius = sqrt(sideOne*sideOne + sideTwo*sideTwo)/2
-
-        // Left Hand Curve
-        self.addArc(withCenter: CGPoint(x: rect.minX + rect.width * 0.3, y: rect.minY + rect.height * 0.35),
-                    radius: arcRadius,
-                    startAngle: 135.degreesToRadians,
-                    endAngle: 315.degreesToRadians,
-                    clockwise: true)
-
-        // Top Centre Dip
-        self.addLine(to: CGPoint(x: rect.minX + rect.width/2, y: rect.minY + rect.height * 0.2))
-
-        // Right Hand Curve
-        self.addArc(withCenter: CGPoint(x: rect.minX + rect.width * 0.7, y: rect.minY + rect.height * 0.35),
-                    radius: arcRadius,
-                    startAngle: 225.degreesToRadians,
-                    endAngle: 45.degreesToRadians,
-                    clockwise: true)
-
-        // Right Bottom Line
-        self.addLine(to: CGPoint(x: rect.minX + rect.width * 0.5, y: rect.minY + rect.height * 0.95))
-
-        // Left Bottom Line
+        
+        let minX: CGFloat = 0.0
+        let maxX: CGFloat = 24.7266
+        let minY: CGFloat = 0.693359
+        let maxY: CGFloat = 23.4668
+        
+        let origWidth  = maxX - minX
+        let origHeight = maxY - minY
+        
+        let scale = rect.width / origWidth
+        let scaledHeight = origHeight * scale
+        
+        let yOffset = rect.minY + (rect.height - scaledHeight) / 2.0
+        
+        func P(_ x: CGFloat, _ y: CGFloat) -> CGPoint {
+            return CGPoint(
+                x: rect.minX + (x - minX) * scale,
+                y: yOffset     + (y - minY) * scale
+            )
+        }
+        
+        self.move(to: P(12.3633, 23.4668))
+        
+        self.addCurve(
+            to: P(13.1934, 23.1543),
+            controlPoint1: P(12.6074, 23.4668),
+            controlPoint2: P(12.9492, 23.3105)
+        )
+        
+        self.addCurve(
+            to: P(24.7266, 8.1543),
+            controlPoint1: P(20.1758, 18.6523),
+            controlPoint2: P(24.7266, 13.457)
+        )
+        
+        self.addCurve(
+            to: P(17.8125, 0.693359),
+            controlPoint1: P(24.7266, 3.79883),
+            controlPoint2: P(21.7285, 0.693359)
+        )
+        
+        self.addCurve(
+            to: P(12.3633, 4.11133),
+            controlPoint1: P(15.4199, 0.693359),
+            controlPoint2: P(13.4668, 2.04102)
+        )
+        
+        self.addCurve(
+            to: P(6.91406, 0.693359),
+            controlPoint1: P(11.2695, 2.05078),
+            controlPoint2: P(9.31641, 0.693359)
+        )
+        
+        self.addCurve(
+            to: P(0, 8.1543),
+            controlPoint1: P(2.99805, 0.693359),
+            controlPoint2: P(0, 3.79883)
+        )
+        
+        self.addCurve(
+            to: P(11.543, 23.1543),
+            controlPoint1: P(0, 13.457),
+            controlPoint2: P(4.55078, 18.6523)
+        )
+        
+        self.addCurve(
+            to: P(12.3633, 23.4668),
+            controlPoint1: P(11.7871, 23.3105),
+            controlPoint2: P(12.1289, 23.4668)
+        )
+        
         self.close()
     }
 }
