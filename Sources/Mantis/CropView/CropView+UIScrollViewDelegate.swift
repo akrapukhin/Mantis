@@ -14,12 +14,14 @@ extension CropView: UIScrollViewDelegate {
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        hasUserInteracted = true
         delegate?.cropViewDidBeginCrop(self)
         viewModel.setTouchImageStatus()
     }
     
     func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
         // A resize event has begun via gesture on the photo (scrollview), so notify delegate
+        hasUserInteracted = true
         delegate?.cropViewDidBeginResize(self)
         viewModel.setTouchImageStatus()
     }

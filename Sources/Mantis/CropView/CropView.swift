@@ -39,7 +39,14 @@ final class CropView: UIView {
     
     weak var delegate: CropViewDelegate? {
         didSet {
-            checkImageStatusChanged()
+            // Only check image status if user has interacted
+            // During initialization, we don't want to mark as resettable
+            if hasUserInteracted {
+                checkImageStatusChanged()
+            } else {
+                // Explicitly set to unresettable during initialization
+                delegate?.cropViewDidBecomeUnResettable(self)
+            }
         }
     }
     
@@ -65,6 +72,7 @@ final class CropView: UIView {
     let cropViewConfig: CropViewConfig
     
     private var flipOddTimes = false
+    var hasUserInteracted = false
     
     lazy private var activityIndicator: ActivityIndicatorProtocol = {
         let activityIndicator: ActivityIndicatorProtocol
@@ -175,7 +183,11 @@ final class CropView: UIView {
             toggleRotationControlViewIsNeeded(isHidden: false)
             adaptRotationControlViewToCropBoxIfNeeded()
             cropMaskViewManager.showVisualEffectBackground(animated: true)
-            checkImageStatusChanged()
+            // Only check status if user has interacted
+            // Don't mark as resettable during initialization
+            if hasUserInteracted {
+                checkImageStatusChanged()
+            }
         }
     }
     
@@ -218,6 +230,7 @@ final class CropView: UIView {
         
     private func setupCropWorkbenchView() {
         cropWorkbenchView.touchesBegan = { [weak self] in
+            self?.hasUserInteracted = true
             self?.viewModel.setTouchImageStatus()
         }
         
@@ -1136,12 +1149,14 @@ extension CropView: CropViewProtocol {
     }
     
     func horizontallyFlip() {
+        hasUserInteracted = true
         viewModel.horizontallyFlip.toggle()
         flip(isHorizontal: true)
         checkImageStatusChanged()
     }
     
     func verticallyFlip() {
+        hasUserInteracted = true
         viewModel.verticallyFlip.toggle()
         flip(isHorizontal: false)
         checkImageStatusChanged()
