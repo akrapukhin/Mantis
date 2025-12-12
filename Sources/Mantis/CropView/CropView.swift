@@ -230,7 +230,6 @@ final class CropView: UIView {
         
     private func setupCropWorkbenchView() {
         cropWorkbenchView.touchesBegan = { [weak self] in
-            self?.hasUserInteracted = true
             self?.viewModel.setTouchImageStatus()
         }
         

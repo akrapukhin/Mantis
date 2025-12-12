@@ -67,6 +67,7 @@ extension CropView {
         let touchPoint = touch.location(in: self)
         
         if touchPoint != viewModel.panOriginPoint {
+            hasUserInteracted = true
             updateCropBoxFrame(withTouchPoint: touchPoint)
         }
     }
