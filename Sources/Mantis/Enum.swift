@@ -77,6 +77,8 @@ public enum CropShapeType: Hashable {
 
     case heart(maskOnly: Bool = false)
 
+    case star(maskOnly: Bool = false)
+
     case polygon(sides: Int, offset: CGFloat = 0, maskOnly: Bool = false)
 
     /**
@@ -106,13 +108,16 @@ public enum CropShapeType: Hashable {
         case .heart(let maskOnly):
             hasher.combine(6)
             hasher.combine(maskOnly)
-        case .polygon(let sides, let offset, let maskOnly):
+        case .star(let maskOnly):
             hasher.combine(7)
+            hasher.combine(maskOnly)
+        case .polygon(let sides, let offset, let maskOnly):
+            hasher.combine(8)
             hasher.combine(sides)
             hasher.combine(offset)
             hasher.combine(maskOnly)
         case .path(let points, let maskOnly):
-            hasher.combine(8)
+            hasher.combine(9)
             for point in points {
                 hasher.combine(point.x)
                 hasher.combine(point.y)

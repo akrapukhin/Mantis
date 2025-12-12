@@ -187,6 +187,12 @@ extension UIImage {
         }
     }
     
+    func star(borderWidth: CGFloat = 0, borderColor: UIColor = .clear) -> UIImage? {
+        return getImageWithTransparentBackground(borderWidth: borderWidth, borderColor: borderColor) {
+            UIBezierPath(starIn: $0)
+        }
+    }
+    
     func clipPath(_ points: [CGPoint], borderWidth: CGFloat = 0, borderColor: UIColor = .clear) -> UIImage? {
         guard points.count >= 3 else {
             return nil

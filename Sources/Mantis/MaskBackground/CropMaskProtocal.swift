@@ -113,6 +113,8 @@ extension CropMaskProtocol {
             innerPath = getInnerPath(by: points)
         case .heart:
             innerPath = UIBezierPath(heartIn: initialRect)
+        case .star:
+            innerPath = UIBezierPath(starIn: initialRect)
         case .polygon(let sides, let offset, _):
             let points = polygonPointArray(sides: sides, originX: 0.5, originY: 0.5, radius: 0.5, offset: 90 + offset)
             innerPath = getInnerPath(by: points)
@@ -205,6 +207,95 @@ extension UIBezierPath {
         )
         
         self.close()
+    }
+    
+    convenience init(starIn rect: CGRect) {
+        self.init()
+
+        // Actual bounds of the SVG path coordinates
+        let minX: CGFloat = 0.056583
+        let maxX: CGFloat = 27.5956
+        let minY: CGFloat = 0.0
+        let maxY: CGFloat = 26.5527
+
+        let origWidth  = maxX - minX
+        let origHeight = maxY - minY
+
+        // Small inset so it "almost touches" but doesn't clip
+        let insetX = rect.width * 0.0025   // tweak: 0.01–0.02 usually feels like the Heart glyph
+        let targetWidth = max(0, rect.width - insetX * 2)
+
+        let scale = targetWidth / origWidth
+        let scaledHeight = origHeight * scale
+
+        let xOffset = rect.minX + insetX
+        let yOffset = rect.minY + (rect.height - scaledHeight) / 2.0
+
+        func P(_ x: CGFloat, _ y: CGFloat) -> CGPoint {
+            CGPoint(
+                x: xOffset + (x - minX) * scale,
+                y: yOffset + (y - minY) * scale
+            )
+        }
+
+        move(to: P(5.30072, 26.2109))
+
+        addCurve(to: P(7.02924, 25.9375),
+                 controlPoint1: P(5.75971, 26.5527),
+                 controlPoint2: P(6.33588, 26.4453))
+
+        addLine(to: P(13.8261, 20.957))
+        addLine(to: P(20.6132, 25.9375))
+
+        addCurve(to: P(22.3515, 26.2109),
+                 controlPoint1: P(21.3163, 26.4453),
+                 controlPoint2: P(21.8828, 26.5527))
+
+        addCurve(to: P(22.6249, 24.4824),
+                 controlPoint1: P(22.8007, 25.8691),
+                 controlPoint2: P(22.9081, 25.3027))
+
+        addLine(to: P(19.9589, 16.4941))
+        addLine(to: P(26.8046, 11.5723))
+
+        addCurve(to: P(27.5956, 10.0098),
+                 controlPoint1: P(27.5078, 11.0742),
+                 controlPoint2: P(27.7714, 10.5566))
+
+        addCurve(to: P(26.0331, 9.20898),
+                 controlPoint1: P(27.4199, 9.47266),
+                 controlPoint2: P(26.9023, 9.20898))
+
+        addLine(to: P(17.6249, 9.20898))
+        addLine(to: P(15.0663, 1.23047))
+
+        addCurve(to: P(13.8261, 0.0),
+                 controlPoint1: P(14.7929, 0.410156),
+                 controlPoint2: P(14.3925, 0.0))
+
+        addCurve(to: P(12.5859, 1.23047),
+                 controlPoint1: P(13.2499, 0.0),
+                 controlPoint2: P(12.8496, 0.410156))
+
+        addLine(to: P(10.0175, 9.20898))
+        addLine(to: P(1.60932, 9.20898))
+
+        addCurve(to: P(0.056583, 10.0098),
+                 controlPoint1: P(0.740177, 9.20898),
+                 controlPoint2: P(0.232364, 9.47266))
+
+        addCurve(to: P(0.837833, 11.5723),
+                 controlPoint1: P(-0.128964, 10.5566),
+                 controlPoint2: P(0.144474, 11.0742))
+
+        addLine(to: P(7.68354, 16.4941))
+        addLine(to: P(5.01752, 24.4824))
+
+        addCurve(to: P(5.30072, 26.2109),
+                 controlPoint1: P(4.74408, 25.3027),
+                 controlPoint2: P(4.8515, 25.8691))
+
+        close()
     }
 }
 

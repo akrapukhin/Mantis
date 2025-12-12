@@ -87,7 +87,7 @@ open class CropViewController: UIViewController {
         self.config = config
         
         switch config.cropViewConfig.cropShapeType {
-        case .circle, .square, .heart:
+        case .circle, .square, .heart, .star:
             self.config.presetFixedRatioType = .alwaysUsingOnePresetFixedRatio(ratio: 1)
         default:
             break

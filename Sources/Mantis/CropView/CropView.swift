@@ -717,6 +717,7 @@ extension CropView {
                 .path(_, maskOnly: true),
                 .diamond(maskOnly: true),
                 .heart(maskOnly: true),
+                .star(maskOnly: true),
                 .polygon(_, _, maskOnly: true):
             
             let outputImage: UIImage?
@@ -761,6 +762,11 @@ extension CropView {
         case .heart(maskOnly: false):
             return (croppedImage.heart(borderWidth: cropViewConfig.cropBorderWidth,
                                        borderColor: cropViewConfig.cropBorderColor),
+                    transformation,
+                    cropInfo)
+        case .star(maskOnly: false):
+            return (croppedImage.star(borderWidth: cropViewConfig.cropBorderWidth,
+                                      borderColor: cropViewConfig.cropBorderColor),
                     transformation,
                     cropInfo)
         case .polygon(let sides, let offset, maskOnly: false):
